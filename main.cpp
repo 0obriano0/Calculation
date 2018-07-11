@@ -30,7 +30,8 @@ int main(){
 /* 算法運算區 */ 
 
 char* add(char *num1,char *num2){
-	char *num;
+	char num[100];
+	sprintf(num,"%lf",atof(num1)+atof(num2));
 	return num;
 }
 
@@ -41,7 +42,7 @@ double string_main(char *str){
 	int load_num[2];
 	
 	
-	/* + 和 - 的判定 */
+	/* + 的判定 */
 	str_index[1] = 0;
 	load_num[0] = 0;
 	load_num[1] = 0;
@@ -54,27 +55,23 @@ double string_main(char *str){
 			str_num[get_code_num][load_num[get_code_num]] = '\0';
 		}else{
 			if(get_code == '\0'){
-				switch(*(str+str_index[1])){
-					case '+':
-						get_code = '+';
-						break;
-				}
+				get_code = *(str+str_index[1]);
+			}else if(get_code == '+'){
+				char str_buffer[str_length];
+				str_buffer[0] = '\0';
+				strcat(str_buffer, add(str_num[0],str_num[1]));
+				strcat(str_buffer, str+str_index[1]);
+				*str = '\0';
+				strcat(str, str_buffer);
+				str_index[1] = 0;
+				load_num[0] = 0;
+				load_num[1] = 0;
+				str_num[0][0] = '\0';
+				str_num[1][0] = '\0';
+				get_code = '\0';
+				continue;
 			}else{
-				switch(get_code){
-					case '+':
-						/*char str_buffer[str_length];
-						str_buffer[0] = '\0';
-						strcat(str_buffer, add(str_num[0],str_num[1]));
-						strcat(str_buffer, str+str_index[1]);
-						*str = '\0';
-						strcat(str, str_buffer);
-						str_index[1] = 0;
-						load_num[0] = 0;
-						load_num[1] = 0;
-						char get_code = '\0';*/
-						printf("\n\n%s+%s = ",str_num[0],str_num[1]);
-						break;
-				}
+				
 			}
 		}
 		str_index[1]++;
