@@ -12,6 +12,7 @@ void string_main(char *str);
 void check_add(char *str);
 int get_string_length(char *str);
 void Remake(char *str);
+void get_parentheses(char *str);
 bool check_parentheses(char *str);
 /* 錯誤回報 */
 void error(int code);
@@ -46,8 +47,8 @@ char* add(char *num1,char *num2){
 }
 
 /* 字串處理區 */
-void string_main(char *str){ 				//檢查的主函式
-	
+void string_main(char *str){				//檢查的主函式
+	get_parentheses(str);
 	check_add(str);
 }
 
@@ -114,6 +115,40 @@ void Remake(char *str){
 	check_parentheses(str);
 }
 
+void get_parentheses(char *str){
+	char str_buffer[str_length];
+	int str_buffer_index = 0;
+	int parentheses = 0;
+	int str_index[2]={0,0};
+	while(!*(str+str_index[1])=='\0'){
+		if(*(str+str_index[1])=='('){
+			if(parentheses == 0){
+				str_index[0] = str_index[1];
+				if(str_index[1]!=0)
+					if(*(str+str_index[1]-1) >= '0'&& *(str+str_index[1]-1) <= '9' || *(str+str_index[1]-1) == '.')
+						error(2);
+			}
+			parentheses++;
+		}else if(*(str+str_index[1])==')'){
+			parentheses--;
+			if(parentheses == 0){
+				string_main(str_buffer);
+				strcat(str_buffer, str+str_index[1]+1);
+				*(str+str_index[0]) = '\0';
+				strcat(str, str_buffer);
+				parentheses = 0;
+				str_index[1] = str_index[0];
+				str_buffer_index = 0;
+			}
+		}else if(parentheses != 0){
+			str_buffer[str_buffer_index] = *(str+str_index[1]);
+			str_buffer_index++;
+			str_buffer[str_buffer_index] = '\0';
+		}
+		str_index[1]++;
+	}
+}
+
 bool check_parentheses(char *str){				//檢查()括弧有沒有對稱,及算式中有沒有括弧 
 	bool have_ = false;
 	int num = 0;								//檢查當有 '(' num+1 反之 當有 ')' num-1 判定到 '0' 假如解果為0 表示 () 是對稱的 
@@ -137,6 +172,9 @@ void error(int code){
 	switch(code){
 		case 1:
 			printf("括弧不對秤");
+			break;
+		case 2:
+			printf("括弧前面不是符號");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
