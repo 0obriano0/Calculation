@@ -9,6 +9,7 @@
 char* add(char *num1,char *num2);
 /* 字串處理區 */
 void string_main(char *str);
+void check_negative(char *str);
 void check_add(char *str);
 int get_string_length(char *str);
 void Remake(char *str);
@@ -49,7 +50,33 @@ char* add(char *num1,char *num2){
 /* 字串處理區 */
 void string_main(char *str){				//檢查的主函式
 	get_parentheses(str);
+	check_negative(str);
 	check_add(str);
+}
+
+void check_negative(char *str){				// - 的判定 
+	int str_index[2]={0,0};
+	while(!*(str+str_index[1])=='\0'){
+		char str_buffer[str_length];
+		str_buffer[0] = '\0';
+		if(str_index[1]!=0 && *(str+str_index[1]) == '-'){
+			if(*(str+str_index[1]-1)>='0' && *(str+str_index[1]-1)<='9'){
+				strcat(str_buffer, "+");
+				strcat(str_buffer, str+str_index[1]);
+				*(str+str_index[1]) = '\0';
+				strcat(str, str_buffer);
+			}else if(*(str+str_index[1]-1) == '-'){
+				strcat(str_buffer, "+");
+				strcat(str_buffer, str+str_index[1]+1);
+				*(str+str_index[1]-1) = '\0';
+				strcat(str, str_buffer);
+			}else{
+				if(*(str+str_index[1]-1)!='+')
+					error(-1);
+			}
+		}
+		str_index[1]++;
+	}
 }
 
 void check_add(char *str){					// + 的判定
@@ -84,7 +111,8 @@ void check_add(char *str){					// + 的判定
 				get_code = '\0';
 				continue;
 			}else{
-				
+				if(*(str+str_index[1]-1)!='+')
+					error(3);
 			}
 		}
 		str_index[1]++;
@@ -175,6 +203,9 @@ void error(int code){
 			break;
 		case 2:
 			printf("括弧前面不是符號");
+			break;
+		case 3:
+			printf("+的處裡出現問題");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
