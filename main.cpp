@@ -3,22 +3,22 @@
 #include <conio.h>
 #include <string.h>
 #include <math.h>
-#define str_length 1000
+#define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限 
 
 /* 算法運算區 */ 
-char* add(char *num1,char *num2);
-char* multiply(char *num1,char *num2);
-char* divide(char *num1,char *num2);
+char* add(char *num1,char *num2);					// 加的運算 
+char* multiply(char *num1,char *num2);				// 乘的運算 
+char* divide(char *num1,char *num2);				// 除的運算 
 /* 字串處理區 */
-void string_main(char *str);
-void check_negative(char *str);
-void check_multiply_and_divide(char *str);
-void check_add(char *str);
-int get_string_length(char *str);
-void Remake(char *str);
-void take_out_space(char* str);
-void get_parentheses(char *str);
-bool check_parentheses(char *str);
+void string_main(char *str);						//處理字串的主函式 
+void check_negative(char *str);						//處理 '-' 符號 
+void check_multiply_and_divide(char *str);			//處理 * & / 
+void check_add(char *str);							//處理 + 
+int get_string_length(char *str);					//讀取字串長度 
+void Remake(char *str);								//檢查使用者輸入的字串，並將他整理成程式所需的格式 
+void take_out_space(char* str);						//將所有的空白拿掉 
+void get_parentheses(char *str);					//取得括弧內的值並做運算 
+bool check_parentheses(char *str);					//處理 ( ) 
 /* 錯誤回報 */
 void error(int code);
 
