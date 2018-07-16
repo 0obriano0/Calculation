@@ -136,9 +136,7 @@ void check_multiply_and_divide(char *str){
 					str_num[0][0] = *(str+str_index[0]);
 					load_num[0]++;
 				}else{
-					if(str_index[0] == -1){
-						str_index[0] = 0;
-					}else if (str_index[0] < -1){
+					if (str_index[0] < -1){
 						error(11);
 					}
 					
@@ -153,7 +151,7 @@ void check_multiply_and_divide(char *str){
 						error(12);
 					}
 					strcat(str_buffer, str+str_index[1]);
-					*(str+str_index[0]) = '\0';
+					*(str+str_index[0]+1) = '\0';
 					strcat(str, str_buffer);
 					str_index[1] = 0;
 					str_index[0] = 0;
