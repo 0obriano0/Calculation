@@ -10,7 +10,8 @@ char* add(char *num1,char *num2);					// 加的運算
 char* multiply(char *num1,char *num2);				// 乘的運算 
 char* divide(char *num1,char *num2);				// 除的運算 
 /* 字串處理區 */
-void string_main(char *str);						//處理字串的主函式 
+void string_main(char *str);						//處理字串的主函式
+void check_factorial(char *str);					//處理 '!' 乘階符號 
 void check_negative(char *str);						//處理 '-' 符號 
 void check_multiply_and_divide(char *str);			//處理 * & / 
 void check_add(char *str);							//處理 + 
@@ -59,7 +60,7 @@ char* multiply(char *num1,char *num2){
 
 char* divide(char *num1,char *num2){
 	char num[100];
-	if(atof(num2) == 0)
+	if(atof(num2) == 0)						//檢查 被除數是不是為零 
 		error(10);
 	sprintf(num,"%lf",atof(num1)/atof(num2));
 	return num;
@@ -73,6 +74,10 @@ void string_main(char *str){				//檢查的主函式
 	check_multiply_and_divide(str);
 	check_add(str);
 	take_out_space(str);
+}
+
+void check_factorial(char *str){
+	
 }
 
 void check_negative(char *str){				// - 的判定 
@@ -172,30 +177,29 @@ void check_multiply_and_divide(char *str){
 }
 
 void check_add(char *str){					// + 的判定
-	int str_index[2]={0,0};
+	int str_index=0;
 	char str_num[2][str_length+1];
 	int load_num[2];
-	str_index[1] = 0;
 	load_num[0] = 0;
 	load_num[1] = 0;
 	char get_code = '\0';
-	while(!*(str+str_index[1])=='\0'){
+	while(!*(str+str_index)=='\0'){
 		int get_code_num = get_code == '\0'? 0 : 1;
-		if((*(str+str_index[1])-'0' >=0 && *(str+str_index[1]) - '0'<=9)||*(str+str_index[1]) == '.' || *(str+str_index[1]) == '-'){
-			str_num[get_code_num][load_num[get_code_num]] = *(str+str_index[1]);
+		if((*(str+str_index)-'0' >=0 && *(str+str_index) - '0'<=9)||*(str+str_index) == '.' || *(str+str_index) == '-'){
+			str_num[get_code_num][load_num[get_code_num]] = *(str+str_index);
 			load_num[get_code_num]++;
 			str_num[get_code_num][load_num[get_code_num]] = '\0';
 		}else{
 			if(get_code == '\0'){
-				get_code = *(str+str_index[1]);
+				get_code = *(str+str_index);
 			}else if(get_code == '+'){
 				char str_buffer[str_length];
 				str_buffer[0] = '\0';
 				strcat(str_buffer, add(str_num[0],str_num[1]));
-				strcat(str_buffer, str+str_index[1]);
+				strcat(str_buffer, str+str_index);
 				*str = '\0';
 				strcat(str, str_buffer);
-				str_index[1] = 0;
+				str_index = 0;
 				load_num[0] = 0;
 				load_num[1] = 0;
 				str_num[0][0] = '\0';
@@ -206,7 +210,7 @@ void check_add(char *str){					// + 的判定
 				error(3);
 			}
 		}
-		str_index[1]++;
+		str_index++;
 	}
 } 
 
