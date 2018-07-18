@@ -16,7 +16,7 @@ void check_multiply_and_divide(char *str);			//處理 * & /
 void check_add(char *str);							//處理 + 
 int get_string_length(char *str);					//讀取字串長度 
 void Remake(char *str);								//檢查使用者輸入的字串，並將他整理成程式所需的格式 
-void take_out_space(char* str);						//將所有的空白拿掉 
+int take_out_space(char* str);						//將所有的空白拿掉 
 void get_parentheses(char *str);					//取得括弧內的值並做運算 
 bool check_parentheses(char *str);					//處理 ( ) 
 /* 錯誤回報 */
@@ -38,8 +38,9 @@ int main(){
 		fflush(stdin);
 		Remake(str);
 		string_main(str);
-		printf("%s\n",str);
+		printf("\n答案為: %s\n\n",str);
 		system("pause");
+		printf("\n-----------------------------------------------------------------------\n\n");
 	}
 }
 
@@ -91,7 +92,7 @@ void check_negative(char *str){				// - 的判定
 				*(str+str_index[1]-1) = '\0';
 				strcat(str, str_buffer);
 			}else{
-				if(*(str+str_index[1]-1)!='+')
+				if(*(str+str_index[1]-1)!='+' && *(str+str_index[1]-1)!='*' && *(str+str_index[1]-1)!='/')
 					error(-1);
 			}
 		}
@@ -216,25 +217,14 @@ int get_string_length(char *str){
 }
 
 void Remake(char *str){
-	char str_get[100];
-	int loopnum1 = 0;
-	int loopnum2 = 0;
-	while(!*(str+loopnum1)=='\0'){
-		if(*(str+loopnum1)!=' '){
-			str_get[loopnum2] = *(str+loopnum1);
-			loopnum2++;
-		}
-		loopnum1++; 
-	}
-	str_get[loopnum2] = ' ';
-	str_get[loopnum2+1] = '\0';
-	*str = '\0';
-	strcat(str, str_get);
+	int index = take_out_space(str);
+	*(str+index) = ' ';
+	*(str+index+1) = '\0';
 	check_parentheses(str);
 }
 
-void take_out_space(char* str){
-	char str_get[100];
+int take_out_space(char* str){
+	char str_get[str_length+1];
 	int loopnum1 = 0;
 	int loopnum2 = 0;
 	while(!*(str+loopnum1)=='\0'){
@@ -247,6 +237,7 @@ void take_out_space(char* str){
 	str_get[loopnum2] = '\0';
 	*str = '\0';
 	strcat(str, str_get);
+	return loopnum2;
 }
 
 void get_parentheses(char *str){
@@ -261,6 +252,10 @@ void get_parentheses(char *str){
 				if(str_index[1]!=0)
 					if(*(str+str_index[1]-1) >= '0'&& *(str+str_index[1]-1) <= '9' || *(str+str_index[1]-1) == '.')
 						error(2);
+			}else if(parentheses > 0){
+				str_buffer[str_buffer_index] = *(str+str_index[1]);
+				str_buffer_index++;
+				str_buffer[str_buffer_index] = '\0';
 			}
 			parentheses++;
 		}else if(*(str+str_index[1])==')'){
@@ -274,6 +269,10 @@ void get_parentheses(char *str){
 				parentheses = 0;
 				str_index[1] = str_index[0];
 				str_buffer_index = 0;
+			}else if(parentheses > 0){
+				str_buffer[str_buffer_index] = *(str+str_index[1]);
+				str_buffer_index++;
+				str_buffer[str_buffer_index] = '\0';
 			}
 		}else if(parentheses != 0){
 			str_buffer[str_buffer_index] = *(str+str_index[1]);
