@@ -9,6 +9,7 @@
 char* add(char *num1,char *num2);					//加的運算
 char* multiply(char *num1,char *num2);				//乘的運算
 char* divide(char *num1,char *num2);				//除的運算
+char* factorial(char *num1);						//乘階的運算('!')
 /* 字串處理區 */
 void string_main(char *str);						//處理字串的主函式
 void check_factorial(char *str);					//處理 '!' 乘階符號
@@ -66,6 +67,9 @@ char* divide(char *num1,char *num2){
 	return num;
 }
 
+char* factorial(char *num1){
+	
+}
 
 /* 字串處理區 */
 void string_main(char *str){				//檢查的主函式
