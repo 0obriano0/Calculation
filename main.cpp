@@ -3,23 +3,23 @@
 #include <conio.h>
 #include <string.h>
 #include <math.h>
-#define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限 
+#define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限
 
-/* 算法運算區 */ 
-char* add(char *num1,char *num2);					// 加的運算 
-char* multiply(char *num1,char *num2);				// 乘的運算 
-char* divide(char *num1,char *num2);				// 除的運算 
+/* 算法運算區 */
+char* add(char *num1,char *num2);					//加的運算
+char* multiply(char *num1,char *num2);				//乘的運算
+char* divide(char *num1,char *num2);				//除的運算
 /* 字串處理區 */
 void string_main(char *str);						//處理字串的主函式
-void check_factorial(char *str);					//處理 '!' 乘階符號 
-void check_negative(char *str);						//處理 '-' 符號 
-void check_multiply_and_divide(char *str);			//處理 * & / 
-void check_add(char *str);							//處理 + 
-int get_string_length(char *str);					//讀取字串長度 
-void Remake(char *str);								//檢查使用者輸入的字串，並將他整理成程式所需的格式 
-int take_out_space(char* str);						//將所有的空白拿掉 
-void get_parentheses(char *str);					//取得括弧內的值並做運算 
-bool check_parentheses(char *str);					//處理 ( ) 
+void check_factorial(char *str);					//處理 '!' 乘階符號
+void check_negative(char *str);						//處理 '-' 符號
+void check_multiply_and_divide(char *str);			//處理 * & /
+void check_add(char *str);							//處理 +
+int get_string_length(char *str);					//讀取字串長度
+void Remake(char *str);								//檢查使用者輸入的字串，並將他整理成程式所需的格式
+int take_out_space(char* str);						//將所有的空白拿掉
+void get_parentheses(char *str);					//取得括弧內的值並做運算
+bool check_parentheses(char *str);					//處理 ( )
 /* 錯誤回報 */
 void error(int code);
 
@@ -33,7 +33,7 @@ int main(){
 			fflush(stdin);
 			if(str[str_length] != '\0')
 				printf("輸入文字的長度以達到上限(%d)請重新輸入\n",str_length);
-			printf("請輸入一串算式:" );
+			printf("請輸入一串算式:");
 			scanf("%[^\n]",str);
 		}while(!str[str_length] == '\0' || str[0] == '\0');
 		fflush(stdin);
@@ -60,7 +60,7 @@ char* multiply(char *num1,char *num2){
 
 char* divide(char *num1,char *num2){
 	char num[100];
-	if(atof(num2) == 0)						//檢查 被除數是不是為零 
+	if(atof(num2) == 0)						//檢查 被除數是不是為零
 		error(10);
 	sprintf(num,"%lf",atof(num1)/atof(num2));
 	return num;
@@ -77,10 +77,28 @@ void string_main(char *str){				//檢查的主函式
 }
 
 void check_factorial(char *str){
-	
+	int str_index[2];
+	char str_num[2][str_length+1];
+	str_num[0][0] = '\0';
+	str_num[1][0] = '\0';
+	char get_code = '\0';
+	while(!*(str+str_index[1])=='\0'){
+		if(get_code == '\0'){
+			if(*(str+str_index[1]) == '!'){
+				get_code == *(str+str_index[1]);
+				str_index[0] = str_index[1]-1;
+			}else{
+				str_index[1]++;
+			}
+		}else if(get_code == '!'){
+			if((*(str+str_index[0])-'0' >=0 && *(str+str_index[0]) - '0'<=9)||*(str+str_index[0]) == '.'){
+				
+			}
+		}
+	}
 }
 
-void check_negative(char *str){				// - 的判定 
+void check_negative(char *str){				// - 的判定
 	int str_index[2]={0,0};
 	while(!*(str+str_index[1])=='\0'){
 		char str_buffer[str_length];
@@ -287,9 +305,9 @@ void get_parentheses(char *str){
 	}
 }
 
-bool check_parentheses(char *str){				//檢查()括弧有沒有對稱,及算式中有沒有括弧 
+bool check_parentheses(char *str){				//檢查()括弧有沒有對稱,及算式中有沒有括弧
 	bool have_ = false;
-	int num = 0;								//檢查當有 '(' num+1 反之 當有 ')' num-1 判定到 '0' 假如解果為0 表示 () 是對稱的 
+	int num = 0;								//檢查當有 '(' num+1 反之 當有 ')' num-1 判定到 '0' 假如解果為0 表示 () 是對稱的
 	for(int loopnum1 = 0;!*(str+loopnum1)=='\0';loopnum1++){
 		if(*(str+loopnum1) == '('){
 			num++;
