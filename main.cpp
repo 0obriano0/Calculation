@@ -78,21 +78,32 @@ void string_main(char *str){				//檢查的主函式
 
 void check_factorial(char *str){
 	int str_index[2];
-	char str_num[2][str_length+1];
-	str_num[0][0] = '\0';
-	str_num[1][0] = '\0';
+	char str_num[str_length+1];
+	str_num[0] = '\0';
 	char get_code = '\0';
 	while(!*(str+str_index[1])=='\0'){
 		if(get_code == '\0'){
 			if(*(str+str_index[1]) == '!'){
 				get_code == *(str+str_index[1]);
-				str_index[0] = str_index[1]-1;
+				str_index[0] = str_index[1];
 			}else{
 				str_index[1]++;
 			}
 		}else if(get_code == '!'){
-			if((*(str+str_index[0])-'0' >=0 && *(str+str_index[0]) - '0'<=9)||*(str+str_index[0]) == '.'){
-				
+			if(str_index[0] >= 0){
+				if((*(str+str_index[0])-'0' >=0 && *(str+str_index[0]) - '0'<=9)||*(str+str_index[0]) == '.'){
+					str_index[0]--;
+					if(*(str+str_index[0]) == '-' && str_num[0] == '\0')
+						error(21);
+					char str_buffer[str_length+1];
+					str_buffer[0] = *(str+str_index[0]);
+					str_buffer[1] = '\0';
+					strcat(str_buffer,str_num);
+					str_num[0] = '\0';
+					strcat(str_num,str_buffer);
+				}else{
+					// 準備創造 運算函式 !!XD~~ 
+				}
 			}
 		}
 	}
@@ -337,6 +348,12 @@ void error(int code){
 			break;
 		case 10:
 			printf("因為運算中出現除與 0 所以程式強制關閉");
+			break;
+		case 21:
+			printf("!號前面不是數字 請確認算式");
+			break;程式判定 使用者嘗試算 - 號的 乘階
+		case 22:
+			printf("程式判定 使用者嘗試算 - 號的 乘階");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
