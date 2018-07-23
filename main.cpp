@@ -90,9 +90,9 @@ void check_factorial(char *str){
 				str_index[1]++;
 			}
 		}else if(get_code == '!'){
+			str_index[0]--;
 			if(str_index[0] >= 0){
 				if((*(str+str_index[0])-'0' >=0 && *(str+str_index[0]) - '0'<=9)||*(str+str_index[0]) == '.'){
-					str_index[0]--;
 					if(*(str+str_index[0]) == '-' && str_num[0] == '\0')
 						error(21);
 					char str_buffer[str_length+1];
