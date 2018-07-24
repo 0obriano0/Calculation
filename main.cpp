@@ -23,6 +23,7 @@ void get_parentheses(char *str);					//取得括弧內的值並做運算
 bool check_parentheses(char *str);					//處理 ( )
 /* 錯誤回報 */
 void error(int code);
+void error(int code,char *error_str);
 
 /* 主程式 */
 int main(){
@@ -49,18 +50,18 @@ int main(){
 /* 算法運算區 */ 
 
 char* add(char *num1,char *num2){
-	char num[100];
+	char num[1000];
 	sprintf(num,"%lf",atof(num1)+atof(num2));
 	return num;
 }
 char* multiply(char *num1,char *num2){
-	char num[100];
+	char num[1000];
 	sprintf(num,"%lf",atof(num1)*atof(num2));
 	return num;
 }
 
 char* divide(char *num1,char *num2){
-	char num[100];
+	char num[1000];
 	if(atof(num2) == 0)						//檢查 被除數是不是為零
 		error(10);
 	sprintf(num,"%lf",atof(num1)/atof(num2));
@@ -68,37 +69,45 @@ char* divide(char *num1,char *num2){
 }
 
 char* factorial(char *num1){
-	
+	if(atof(num1) > 30)
+		error(24);
+	if( atof(num1) == 0)
+        return "1";
+    else{
+    	char buffer[1000];
+    	sprintf(buffer,"%lf",atof(num1)-1);
+    	sprintf(buffer,"%lf",atof(num1) * atof(factorial(buffer)));
+    	return buffer;
+    }    
 }
 
 /* 字串處理區 */
 void string_main(char *str){				//檢查的主函式
 	get_parentheses(str);
 	check_negative(str);
+	check_factorial(str);
 	check_multiply_and_divide(str);
 	check_add(str);
 	take_out_space(str);
 }
 
 void check_factorial(char *str){
-	int str_index[2];
+	int str_index[2] = {0,0};
 	char str_num[str_length+1];
 	str_num[0] = '\0';
 	char get_code = '\0';
 	while(!*(str+str_index[1])=='\0'){
 		if(get_code == '\0'){
 			if(*(str+str_index[1]) == '!'){
-				get_code == *(str+str_index[1]);
+				get_code = *(str+str_index[1]);
 				str_index[0] = str_index[1];
 			}else{
 				str_index[1]++;
 			}
 		}else if(get_code == '!'){
-			str_index[0]--;
 			if(str_index[0] >= 0){
-				if((*(str+str_index[0])-'0' >=0 && *(str+str_index[0]) - '0'<=9)||*(str+str_index[0]) == '.'){
-					if(*(str+str_index[0]) == '-' && str_num[0] == '\0')
-						error(21);
+				if((*(str+str_index[0]-1)-'0' >=0 && *(str+str_index[0]-1) - '0'<=9)||*(str+str_index[0]-1) == '.'){
+					str_index[0]--;
 					char str_buffer[str_length+1];
 					str_buffer[0] = *(str+str_index[0]);
 					str_buffer[1] = '\0';
@@ -106,9 +115,27 @@ void check_factorial(char *str){
 					str_num[0] = '\0';
 					strcat(str_num,str_buffer);
 				}else{
-					// 準備創造 運算函式 !!XD~~ 
+					if(str_num[0] != '\0'){
+						if(str_index[0] >= 1){
+							if(*(str+str_index[0]-1) == '-'){
+								if(str_index[0] == 1){
+									char error_str[str_length+1];
+									error_str[0] = '\0';
+									strcat(error_str,"-");
+									strcat(error_str,str_num);
+									strcat(error_str,"!");
+									error(22,error_str);
+								}else 
+									error(23);
+							}
+						}
+						printf("\n\n%s\n\n",factorial(str_num)); // 已經做到呼叫運算函式，要接著做字串整理 
+						system("pause");
+					}else
+						error(21);
 				}
-			}
+			}else if(str_num[0] == '\0')
+				error(21);
 		}
 	}
 }
@@ -122,12 +149,17 @@ void check_negative(char *str){				// - 的判定
 			if(*(str+str_index[1]-1)>='0' && *(str+str_index[1]-1)<='9'){
 				strcat(str_buffer, "+");
 				strcat(str_buffer, str+str_index[1]);
+				
 				*(str+str_index[1]) = '\0';
 				strcat(str, str_buffer);
 			}else if(*(str+str_index[1]-1) == '-'){
 				strcat(str_buffer, "+");
 				strcat(str_buffer, str+str_index[1]+1);
-				*(str+str_index[1]-1) = '\0';
+				if(*(str+str_index[1]-2) == '+'){
+					*(str+str_index[1]-2) = '\0';
+					str_index[1]--;
+				}else
+					*(str+str_index[1]-1) = '\0';
 				strcat(str, str_buffer);
 			}else{
 				if(*(str+str_index[1]-1)!='+' && *(str+str_index[1]-1)!='*' && *(str+str_index[1]-1)!='/')
@@ -355,9 +387,15 @@ void error(int code){
 			break;
 		case 21:
 			printf("!號前面不是數字 請確認算式");
-			break;程式判定 使用者嘗試算 - 號的 乘階
+			break;
 		case 22:
-			printf("程式判定 使用者嘗試算 - 號的 乘階");
+			printf("程式不支援 運算 負數的 乘階");
+			break;
+		case 23:
+			printf("在做 ! 的運算時出現錯誤");
+			break;
+		case 24:
+			printf("! 在運算中意外的滿位了(因為作者實力不夠)");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
@@ -365,4 +403,9 @@ void error(int code){
 	printf("...");
 	getch();
 	exit(1);
+}
+
+void error(int code,char *error_str){
+	printf("\n\n運算式　: %s",error_str);
+	error(code);
 }
