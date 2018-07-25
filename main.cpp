@@ -24,6 +24,7 @@ bool check_parentheses(char *str);					//處理 ( )
 /* 錯誤回報 */
 void error(int code);
 void error(int code,char *error_str);
+void mathematical_string_for_error(char *error_str,char *num1,char *code,char *num2,char *num);
 
 /* 主程式 */
 int main(){
@@ -51,17 +52,30 @@ int main(){
 
 char* add(char *num1,char *num2){
 	char num[1000];
+	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)+atof(num2));
+	if(atof(num) - atof(num2) != atof(num1)){
+		char error_str[str_length+1];
+		mathematical_string_for_error(error_str,num1," + ",num2,num);
+		error(31,error_str);
+	} 
 	return num;
 }
 char* multiply(char *num1,char *num2){
 	char num[1000];
+	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)*atof(num2));
+	if(atof(num) / atof(num2) != atof(num1)){
+		char error_str[str_length+1];
+		mathematical_string_for_error(error_str,num1," * ",num2,num);
+		error(32,error_str);
+	} 
 	return num;
 }
 
 char* divide(char *num1,char *num2){
 	char num[1000];
+	num[0] = '\0';
 	if(atof(num2) == 0)						//檢查 被除數是不是為零
 		error(10);
 	sprintf(num,"%lf",atof(num1)/atof(num2));
@@ -69,15 +83,22 @@ char* divide(char *num1,char *num2){
 }
 
 char* factorial(char *num1){
-	if(atof(num1) > 30)
-		error(24);
 	if( atof(num1) == 0)
         return "1";
     else{
-    	char buffer[1000];
-    	sprintf(buffer,"%lf",atof(num1)-1);
-    	sprintf(buffer,"%lf",atof(num1) * atof(factorial(buffer)));
-    	return buffer;
+    	char num[1000];
+    	num[0] = '\0';
+    	sprintf(num,"%lf",atof(num1)-1);
+    	char function_buffer[1000];
+    	function_buffer[0] = '\0';
+    	sprintf(function_buffer,"%lf",atof(factorial(num)));
+    	sprintf(num,"%lf",atof(num1) * atof(function_buffer));
+    	if(atof(num) / atof(function_buffer) != atof(num1)){
+    		char error_str[str_length+1];
+    		mathematical_string_for_error(error_str,num1,"!","",num);
+    		error(24,error_str);
+    	}	
+    	return num;
     }    
 }
 
@@ -125,12 +146,23 @@ void check_factorial(char *str){
 									strcat(error_str,str_num);
 									strcat(error_str,"!");
 									error(22,error_str);
-								}else 
-									error(23);
+								}else
+									if(*(str+str_index[0]-2) != '+')
+										error(23);
 							}
 						}
-						printf("\n\n%s\n\n",factorial(str_num)); // 已經做到呼叫運算函式，要接著做字串整理 
-						system("pause");
+						char str_buffer[str_length+1];
+						str_buffer[0] = '\0';
+						*(str+str_index[0]) = '\0';
+						strcat(str_buffer,str);
+						strcat(str_buffer,factorial(str_num));
+						strcat(str_buffer,str+str_index[1]+1);
+						*str = '\0';
+						strcat(str,str_buffer);
+						str_index[1] = str_index[0];
+						get_code = '\0';
+						str_index[0] = 0;
+						str_num[0] = '\0';
 					}else
 						error(21);
 				}
@@ -395,7 +427,13 @@ void error(int code){
 			printf("在做 ! 的運算時出現錯誤");
 			break;
 		case 24:
-			printf("! 在運算中意外的滿位了(因為作者實力不夠)");
+			printf("! 在運算中 出現錯誤");
+			break;
+		case 31:
+			printf("算到 + 時 出現錯誤");
+			break;
+		case 32:
+			printf("算到 * 時 出現錯誤");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
@@ -408,4 +446,13 @@ void error(int code){
 void error(int code,char *error_str){
 	printf("\n\n運算式　: %s",error_str);
 	error(code);
+}
+
+void mathematical_string_for_error(char *error_str,char *num1,char *code,char *num2,char *num){
+	*error_str = '\0';
+	strcat(error_str,num1);
+	strcat(error_str,code);
+	strcat(error_str,num2);
+	strcat(error_str," = ");
+	strcat(error_str,num);
 }
