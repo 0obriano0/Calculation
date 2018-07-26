@@ -55,7 +55,9 @@ char* add(char *num1,char *num2){
 	char num[1000];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)+atof(num2));
-	if(atof(num) - atof(num2) != atof(num1)){
+	char buffer[1000];
+    sprintf(buffer,"%lf",atof(num) - atof(num2));
+	if(atof(buffer) != atof(num1)){
 		char error_str[str_length+1];
 		mathematical_string_for_error(error_str,num1," + ",num2,num);
 		error(31,error_str);
@@ -66,7 +68,9 @@ char* multiply(char *num1,char *num2){
 	char num[1000];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)*atof(num2));
-	if((atof(num) / atof(num2)) != atof(num1)){
+	char buffer[1000];
+    sprintf(buffer,"%lf",atof(num) / atof(num2));
+	if(atof(buffer) != atof(num1)){
 		char error_str[str_length+1];
 		std::cout << atof(num) << " / " << atof(num2) << " = " << atof(num) / atof(num2) << std::endl;
 		mathematical_string_for_error(error_str,num1," * ",num2,num);
@@ -95,7 +99,9 @@ char* factorial(char *num1){
     	function_buffer[0] = '\0';
     	sprintf(function_buffer,"%lf",atof(factorial(num)));
     	sprintf(num,"%lf",atof(num1) * atof(function_buffer));
-    	if(atof(num) / atof(function_buffer) != atof(num1)){
+    	char buffer[1000];
+    	sprintf(buffer,"%lf",atof(num) / atof(function_buffer));
+    	if(atof(buffer) != atof(num1)){
     		char error_str[str_length+1];
     		mathematical_string_for_error(error_str,num1,"!","",num);
     		error(24,error_str);
