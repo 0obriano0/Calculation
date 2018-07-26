@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
+#include <iostream> 
 #include <math.h>
 #define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限
 
@@ -65,8 +66,9 @@ char* multiply(char *num1,char *num2){
 	char num[1000];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)*atof(num2));
-	if(atof(num) / atof(num2) != atof(num1)){
+	if((atof(num) / atof(num2)) != atof(num1)){
 		char error_str[str_length+1];
+		std::cout << atof(num) << " / " << atof(num2) << " = " << atof(num) / atof(num2) << std::endl;
 		mathematical_string_for_error(error_str,num1," * ",num2,num);
 		error(32,error_str);
 	} 
