@@ -25,6 +25,7 @@ bool check_parentheses(char *str);					//處理 ( )
 /* 錯誤回報 */
 void error(int code);
 void error(int code,char *error_str);
+/* UI介面處理 */ 
 void mathematical_string_for_error(char *error_str,char *num1,char *code,char *num2,char *num);
 
 /* 主程式 */
@@ -456,6 +457,7 @@ void error(int code,char *error_str){
 	error(code);
 }
 
+/* UI介面處理 */ 
 void mathematical_string_for_error(char *error_str,char *num1,char *code,char *num2,char *num){
 	*error_str = '\0';
 	strcat(error_str,num1);
