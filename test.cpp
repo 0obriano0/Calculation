@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <iostream>
+
+using namespace std;
 
 int main(){
-	double num1,num2;
-	num1 = 92.8;
-	num2 = 9;
-	printf("%lf * %lf = %lf",num1,num2,num1*num2);
-	printf("%lf / %lf = %lf",num1*num2,num1,(num1*num2)/num1);
+	char mode1[5][10];
+	//int num1 = strlen(mode1);
+	int num2 = strlen(mode1[0]);
 } 

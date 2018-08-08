@@ -13,6 +13,7 @@ char* divide(char *num1,char *num2);				//除的運算
 char* factorial(char *num1);						//乘階的運算('!')
 /* 字串處理區 */
 void string_main(char *str);						//處理字串的主函式
+void check_string_combination(char *str);			//處理特殊算式(sin , cos ...) 
 void check_factorial(char *str);					//處理 '!' 乘階符號
 void check_negative(char *str);						//處理 '-' 符號
 void check_multiply_and_divide(char *str);			//處理 * & /
@@ -120,6 +121,10 @@ void string_main(char *str){				//檢查的主函式
 	check_add(str);
 	take_out_space(str);
 }
+void check_string_combination(char *str){
+	char check_text[3][4] = {"sin","cos","end;"};
+	
+} 
 
 void check_factorial(char *str){
 	int str_index[2] = {0,0};
@@ -328,6 +333,9 @@ int get_string_length(char *str){
 
 void Remake(char *str){
 	int index = take_out_space(str);
+	for(int loopnum1 = 0;!*(str+loopnum1)=='\0';loopnum1++)
+		if(*(str+loopnum1) >= 'A' && *(str+loopnum1) <='Z')
+			*(str+loopnum1) = *(str+loopnum1) - 'A' + 'a';
 	*(str+index) = ' ';
 	*(str+index+1) = '\0';
 	check_parentheses(str);
