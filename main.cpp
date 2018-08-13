@@ -7,6 +7,7 @@
 #define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限
 
 /* 算法運算區 */
+char* string_combination(int mode,char *str);		//特殊算式(sin , cos ...)運算 
 char* add(char *num1,char *num2);					//加的運算
 char* multiply(char *num1,char *num2);				//乘的運算
 char* divide(char *num1,char *num2);				//除的運算
@@ -52,6 +53,15 @@ int main(){
 }
 
 /* 算法運算區 */ 
+
+char* string_combination(int mode,char *str){
+	switch(mode){
+		case 0:
+			break;
+		default:
+			printf("找不到此算式");
+	}
+} 
 
 char* add(char *num1,char *num2){
 	char num[1000];
@@ -121,9 +131,39 @@ void string_main(char *str){				//檢查的主函式
 	check_add(str);
 	take_out_space(str);
 }
+
 void check_string_combination(char *str){
 	char check_text[3][4] = {"sin","cos","end;"};
+	int check_text_index = -1; 
 	
+	for(int loopnum1 = 0;check_text_index == -1;loopnum1++){
+		char end_text[] = "end;";
+		for(int loopnum2 = 0;loopnum2 <= get_string_length(end_text)+1;loopnum2++){
+			if(check_text[loopnum1][loopnum2] == end_text[loopnum2]){
+				if(end_text[loopnum2] == '\0')
+					check_text_index = loopnum1;
+			}else
+				break;
+		} 
+	}
+	
+	int str_index[2] = {0,0};
+	char str_num[str_length+1];
+	str_num[0] = '\0';
+	while(!*(str+str_index[1])=='\0'){
+		if(*(str+str_index[1]) >= 'a' && *(str+str_index[1]) <= 'z'){
+			str_index[0] = str_index[1];
+			for(int loopnum1 = 0;loopnum1 < check_text_index;loopnum1++){
+				for(int loopnum2 = 0;loopnum2 <= get_string_length(check_text[loopnum1])+1;loopnum2++){
+					if(check_text[loopnum1][loopnum2] == *(str+str_index[1])){
+						if(check_text[loopnum1][loopnum2] == '\0')
+							//做到這 
+					}else
+						break;
+				}
+			}
+		}
+	}
 } 
 
 void check_factorial(char *str){
