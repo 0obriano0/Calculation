@@ -38,8 +38,8 @@ int main(){
 		str[0] = '\0';
 		do{
 			fflush(stdin);
-			if(str[str_length] != '\0')
-				printf("輸入文字的長度以達到上限(%d)請重新輸入\n",str_length);
+			if(str[str_length-20] != '\0')
+				printf("輸入文字的長度以達到上限(%d)請重新輸入\n",str_length-20);
 			printf("請輸入一串算式:");
 			scanf("%[^\n]",str);
 		}while(!str[str_length] == '\0' || str[0] == '\0');
@@ -55,16 +55,49 @@ int main(){
 /* 算法運算區 */ 
 
 char* string_combination(int mode,char *str){
+	char buffer[str_length+1];
+	char buffer2[str_length+1];
+	buffer[0] = '\0';
+	buffer2[0] = '\0';
 	switch(mode){
-		case 0:
+		case 0://sin
+			sprintf(buffer,"%lf",sin(atof(str)));
+			break;
+		case 1://cos
+			sprintf(buffer,"%lf",cos(atof(str)));
+			break;
+		case 2://tan
+			sprintf(buffer,"%lf",tan(atof(str)));
+			break;
+		case 3://csc
+			sprintf(buffer2,"%lf",sin(atof(str)));
+			strcat(buffer,divide("1",buffer2));
+			break;
+		case 4://sec
+			sprintf(buffer2,"%lf",cos(atof(str)));
+			strcat(buffer,divide("1",buffer2));
+			break;
+		case 5://cot
+			sprintf(buffer2,"%lf",tan(atof(str)));
+			strcat(buffer,divide("1",buffer2));
+			break;
+		case 6://sinh
+			sprintf(buffer,"%lf",sinh(atof(str)));
+			break;
+		case 7://cosh
+			sprintf(buffer,"%lf",cosh(atof(str)));
+			break;
+		case 8://tanh
+			sprintf(buffer,"%lf",tanh(atof(str)));
 			break;
 		default:
-			printf("找不到此算式");
+			error(43);
 	}
+	return buffer;
 } 
 
 char* add(char *num1,char *num2){
-	char num[1000];
+	char num[str_length+1];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)+atof(num2));
 	char buffer[1000];
@@ -77,10 +110,10 @@ char* add(char *num1,char *num2){
 	return num;
 }
 char* multiply(char *num1,char *num2){
-	char num[1000];
+	char num[str_length+1];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)*atof(num2));
-	char buffer[1000];
+	char buffer[str_length+1];
     sprintf(buffer,"%lf",atof(num) / atof(num2));
 	if(atof(buffer) != atof(num1)){
 		char error_str[str_length+1];
@@ -92,7 +125,7 @@ char* multiply(char *num1,char *num2){
 }
 
 char* divide(char *num1,char *num2){
-	char num[1000];
+	char num[str_length+1];
 	num[0] = '\0';
 	if(atof(num2) == 0)						//檢查 被除數是不是為零
 		error(10);
@@ -104,7 +137,7 @@ char* factorial(char *num1){
 	if( atof(num1) == 0)
         return "1";
     else{
-    	char num[1000];
+    	char num[str_length+1];
     	num[0] = '\0';
     	sprintf(num,"%lf",atof(num1)-1);
     	char function_buffer[1000];
@@ -126,6 +159,7 @@ char* factorial(char *num1){
 void string_main(char *str){				//檢查的主函式
 	get_parentheses(str);
 	check_negative(str);
+	check_string_combination(str);
 	check_factorial(str);
 	check_multiply_and_divide(str);
 	check_add(str);
@@ -133,7 +167,7 @@ void string_main(char *str){				//檢查的主函式
 }
 
 void check_string_combination(char *str){
-	char check_text[3][4] = {"sin","cos","end;"};
+	char check_text[10][5] = {"sin","cos","tan","csc","sec","cot","sinh","cosh","tanh","end;"};
 	int check_text_index = -1; 
 	
 	for(int loopnum1 = 0;check_text_index == -1;loopnum1++){
@@ -146,23 +180,56 @@ void check_string_combination(char *str){
 				break;
 		} 
 	}
-	
 	int str_index[2] = {0,0};
 	char str_num[str_length+1];
 	str_num[0] = '\0';
+	bool get_code = false;
 	while(!*(str+str_index[1])=='\0'){
 		if(*(str+str_index[1]) >= 'a' && *(str+str_index[1]) <= 'z'){
+			get_code = true;
 			str_index[0] = str_index[1];
 			for(int loopnum1 = 0;loopnum1 < check_text_index;loopnum1++){
 				for(int loopnum2 = 0;loopnum2 <= get_string_length(check_text[loopnum1])+1;loopnum2++){
-					if(check_text[loopnum1][loopnum2] == *(str+str_index[1])){
-						if(check_text[loopnum1][loopnum2] == '\0')
-							//做到這 
-					}else
+					if(check_text[loopnum1][loopnum2] == '\0' && !(*(str+str_index[1]) >= 'a' && *(str+str_index[1]) <= 'z')){
+						for(int loopnum3 = 0;(*(str+str_index[1])-'0' >= 0 && *(str+str_index[1]) - '0' <= 9) || *(str+str_index[1]) == '.' || *(str+str_index[1]) == '-';str_index[1]++){
+							if(*(str+str_index[1]) == '-'){
+								if(loopnum3 != 0)
+									error(41);
+								str_num[loopnum3] = *(str+str_index[1]);
+							}else if((*(str+str_index[1])-'0' >= 0 && *(str+str_index[1]) - '0' <= 9) || *(str+str_index[1]) == '.'){
+								str_num[loopnum3] = *(str+str_index[1]);
+							}else{
+								error(42);
+							}
+							str_num[++loopnum3] = '\0';
+						}
+						char str_buffer[str_length+1];
+						str_buffer[0] = '\0';
+						if(str_index[0]>0 && ((*(str+str_index[0]-1) - '0'>= 0 && *(str+str_index[0]-1) - '0' <= 9) || *(str+str_index[0]-1) == '.')){
+							*(str+str_index[0]) = '*';
+							*(str+str_index[0]+1) = '\0';
+						}else
+							*(str+str_index[0]) = '\0';
+						strcat(str_buffer,str);
+						strcat(str_buffer,string_combination(loopnum1,str_num));
+						strcat(str_buffer,str+str_index[1]);
+						*str = '\0';
+						strcat(str,str_buffer);
 						break;
+					}
+					if(check_text[loopnum1][loopnum2] == *(str+str_index[1]))
+						str_index[1]++;
+					else{
+						str_index[1]-=loopnum2;
+						break;
+					}
 				}
+				if(!get_code)
+					break;
 			}
+			str_index[1] = str_index[0]-1;
 		}
+		str_index[1]++;
 	}
 } 
 
@@ -491,6 +558,15 @@ void error(int code){
 			break;
 		case 32:
 			printf("算到 * 時 出現錯誤");
+			break;
+		case 41:
+			printf("在偵測運算式時 出現錯誤(符號後不是數字)");
+			break;
+		case 42:
+			printf("在偵測運算式時 出現錯誤");
+			break;
+		case 43:
+			printf("程式設計師忘記增加算法請跟程式設計師確認");
 			break;
 		default:
 			printf("未知錯誤，請聯絡程式設計師");
