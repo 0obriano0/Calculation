@@ -5,25 +5,29 @@
 #include <iostream> 
 #include <math.h>
 #define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限
+#define system_output false
+#define system_output_function false
 
 /* 算法運算區 */
-char* string_combination(int mode,char *str);		//特殊算式(sin , cos ...)運算 
-char* add(char *num1,char *num2);					//加的運算
-char* multiply(char *num1,char *num2);				//乘的運算
-char* divide(char *num1,char *num2);				//除的運算
-char* factorial(char *num1);						//乘階的運算('!')
+char* string_combination(int mode,char *str);							//特殊算式(sin , cos ...)運算 
+char* add(char *num1,char *num2);										//加的運算
+char* multiply(char *num1,char *num2);									//乘的運算
+char* divide(char *num1,char *num2);									//除的運算
+char* factorial(char *num1);											//乘階的運算('!')
 /* 字串處理區 */
-void string_main(char *str);						//處理字串的主函式
-void check_string_combination(char *str);			//處理特殊算式(sin , cos ...) 
-void check_factorial(char *str);					//處理 '!' 乘階符號
-void check_negative(char *str);						//處理 '-' 符號
-void check_multiply_and_divide(char *str);			//處理 * & /
-void check_add(char *str);							//處理 +
-int get_string_length(char *str);					//讀取字串長度
-void Remake(char *str);								//檢查使用者輸入的字串，並將他整理成程式所需的格式
-int take_out_space(char* str);						//將所有的空白拿掉
-void get_parentheses(char *str);					//取得括弧內的值並做運算
-bool check_parentheses(char *str);					//處理 ( )
+void string_main(char *str);											//處理字串的主函式
+void check_string_combination(char *str);								//處理特殊算式(sin , cos ...) 
+void check_factorial(char *str);										//處理 '!' 乘階符號
+void check_negative(char *str);											//處理 '-' 符號
+void check_multiply_and_divide(char *str);								//處理 * & /
+void check_add(char *str);												//處理 +
+int get_string_length(char *str);										//讀取字串長度
+void Remake(char *str);													//檢查使用者輸入的字串，並將他整理成程式所需的格式
+int take_out_space(char* str);											//將所有的空白拿掉
+void get_parentheses(char *str);										//取得括弧內的值並做運算
+bool check_parentheses(char *str);										//處理 ( )
+void system_out(char *num1,char *code,char *num2);  					//UI整理(顯示系統運算的步驟)
+void system_out_function(char *function_name,char *str,char *text);		//UI整理(顯示系統運算的步驟)
 /* 錯誤回報 */
 void error(int code);
 void error(int code,char *error_str);
@@ -44,6 +48,7 @@ int main(){
 			scanf("%[^\n]",str);
 		}while(!str[str_length] == '\0' || str[0] == '\0');
 		fflush(stdin);
+		printf("\n-----------------------------------------------------------------------\n\n");
 		Remake(str);
 		string_main(str);
 		printf("\n答案為: %s\n\n",str);
@@ -90,6 +95,21 @@ char* string_combination(int mode,char *str){
 		case 8://tanh
 			sprintf(buffer,"%lf",tanh(atof(str)));
 			break;
+		case 9://asin
+			if(!(atof(str) >= -1 && atof(str) <= 1))
+				error(44);
+			sprintf(buffer,"%lf",asin(atof(str)));	
+			break;
+		case 10://acos
+			if(!(atof(str) >= -1 && atof(str) <= 1))
+				error(44);
+			sprintf(buffer,"%lf",asin(atof(str)));	
+			break;
+		case 11://atan
+			if(!(atof(str) >= -1 && atof(str) <= 1))
+				error(44);
+			sprintf(buffer,"%lf",asin(atof(str)));	
+			break;
 		default:
 			error(43);
 	}
@@ -97,8 +117,9 @@ char* string_combination(int mode,char *str){
 } 
 
 char* add(char *num1,char *num2){
+	system_out(num1,"+",num2);
 	char num[str_length+1];
-	num[0] = '\0';
+	num[0] = '\0'; 
 	sprintf(num,"%lf",atof(num1)+atof(num2));
 	char buffer[1000];
     sprintf(buffer,"%lf",atof(num) - atof(num2));
@@ -110,6 +131,7 @@ char* add(char *num1,char *num2){
 	return num;
 }
 char* multiply(char *num1,char *num2){
+	system_out(num1,"*",num2);
 	char num[str_length+1];
 	num[0] = '\0';
 	sprintf(num,"%lf",atof(num1)*atof(num2));
@@ -125,6 +147,7 @@ char* multiply(char *num1,char *num2){
 }
 
 char* divide(char *num1,char *num2){
+	system_out(num1,"/",num2);
 	char num[str_length+1];
 	num[0] = '\0';
 	if(atof(num2) == 0)						//檢查 被除數是不是為零
@@ -134,6 +157,7 @@ char* divide(char *num1,char *num2){
 }
 
 char* factorial(char *num1){
+	system_out(num1,"!","");
 	if( atof(num1) == 0)
         return "1";
     else{
@@ -167,7 +191,8 @@ void string_main(char *str){				//檢查的主函式
 }
 
 void check_string_combination(char *str){
-	char check_text[10][5] = {"sin","cos","tan","csc","sec","cot","sinh","cosh","tanh","end;"};
+	system_out_function("check_string_combination \t",str,"正在偵測特殊算式");
+	char check_text[13][5] = {"sin","cos","tan","csc","sec","cot","sinh","cosh","tanh","asin","acos","atan","end;"};
 	int check_text_index = -1; 
 	
 	for(int loopnum1 = 0;check_text_index == -1;loopnum1++){
@@ -210,6 +235,7 @@ void check_string_combination(char *str){
 							*(str+str_index[0]+1) = '\0';
 						}else
 							*(str+str_index[0]) = '\0';
+						system_out("",check_text[loopnum1],str_num);
 						strcat(str_buffer,str);
 						strcat(str_buffer,string_combination(loopnum1,str_num));
 						strcat(str_buffer,str+str_index[1]);
@@ -234,6 +260,7 @@ void check_string_combination(char *str){
 } 
 
 void check_factorial(char *str){
+	system_out_function("check_factorial\t\t",str,"正在偵測 階乘符號 '!'");
 	int str_index[2] = {0,0};
 	char str_num[str_length+1];
 	str_num[0] = '\0';
@@ -294,6 +321,7 @@ void check_factorial(char *str){
 }
 
 void check_negative(char *str){				// - 的判定
+	system_out_function("check_negative \t\t",str,"正在偵測 - ");
 	int str_index[2]={0,0};
 	while(!*(str+str_index[1])=='\0'){
 		char str_buffer[str_length];
@@ -324,6 +352,7 @@ void check_negative(char *str){				// - 的判定
 }
 
 void check_multiply_and_divide(char *str){
+	system_out_function("check_multiply_and_divide\t",str,"正在偵測 * 與 /");
 	int str_index[2]={0,0};
 	char str_num[2][str_length+1];
 	str_num[0][0] = '\0';
@@ -395,6 +424,7 @@ void check_multiply_and_divide(char *str){
 }
 
 void check_add(char *str){					// + 的判定
+	system_out_function("check_add        \t\t",str,"正在偵測 + ");
 	int str_index=0;
 	char str_num[2][str_length+1];
 	int load_num[2];
@@ -466,6 +496,7 @@ int take_out_space(char* str){
 }
 
 void get_parentheses(char *str){
+	system_out_function("get_parentheses\t\t",str,"正在偵測()"); 
 	char str_buffer[str_length];
 	int str_buffer_index = 0;
 	int parentheses = 0;
@@ -525,6 +556,15 @@ bool check_parentheses(char *str){				//檢查()括弧有沒有對稱,及算式中有沒有括弧
 	return have_;
 }
 
+void system_out(char *num1,char *code,char *num2){
+	if(system_output && system_output_function)
+		std::cout << "[系統訊息] 正在運算: " << num1 << code << num2 << "\n";
+}
+
+void system_out_function(char *function_name,char *str,char *text){
+	if(system_output)
+		std::cout << "[系統訊息] 正在處理: " << function_name << " 函式 其處理內容為: " << str << "\n           處理方式: " << text << "\n\n";
+}
 /* 錯誤回報 */
 void error(int code){
 	printf("\n錯誤代碼: %d\n錯誤資訊: ",code);
