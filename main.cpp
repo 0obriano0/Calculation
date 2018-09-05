@@ -5,7 +5,7 @@
 #include <iostream> 
 #include <math.h>
 #define str_length 1000								//因為不太熟悉動態記憶體，所以將使用著輸入的字設上限
-#define system_output true							//系統提示訊息(總開關) 
+#define system_output false							//系統提示訊息(總開關) 
 #define system_output_function true					//系統提示訊息(函示執行) 
 
 /* 算法運算區 */
