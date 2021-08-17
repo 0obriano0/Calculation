@@ -27,6 +27,7 @@ int take_out_space(char* str);											//將所有的空白拿掉
 void get_parentheses(char *str);										//取得括弧內的值並做運算
 bool check_parentheses(char *str);										//處理 ( )
 void system_out(char *num1,char *code,char *num2);  					//UI整理(顯示系統運算的步驟)
+void system_out(char *num1,char *code,char *num2,char *num3);  			//UI整理(顯示系統運算的步驟)
 void system_out_function(char *function_name,char *str,char *text);		//UI整理(顯示系統運算的步驟)
 /* 錯誤回報 */
 void error(int code);
@@ -128,6 +129,7 @@ char* add(char *num1,char *num2){
 		mathematical_string_for_error(error_str,num1," + ",num2,num);
 		error(31,error_str);
 	} 
+  system_out(num1,"+",num2,num);
 	return num;
 }
 char* multiply(char *num1,char *num2){
@@ -143,6 +145,7 @@ char* multiply(char *num1,char *num2){
 		mathematical_string_for_error(error_str,num1," * ",num2,num);
 		error(32,error_str);
 	} 
+  system_out(num1,"*",num2,num);
 	return num;
 }
 
@@ -153,6 +156,7 @@ char* divide(char *num1,char *num2){
 	if(atof(num2) == 0)						//檢查 被除數是不是為零
 		error(10);
 	sprintf(num,"%lf",atof(num1)/atof(num2));
+  system_out(num1,"/",num2,num);
 	return num;
 }
 
@@ -175,6 +179,7 @@ char* factorial(char *num1){
     		mathematical_string_for_error(error_str,num1,"!","",num);
     		error(24,error_str);
     	}	
+      system_out(num1,"!","",num);
     	return num;
     }    
 }
@@ -559,6 +564,11 @@ bool check_parentheses(char *str){				//檢查()括弧有沒有對稱,及算式中有沒有括弧
 void system_out(char *num1,char *code,char *num2){
 	if(system_output && system_output_function)
 		std::cout << "[系統訊息] 正在運算: " << num1 << code << num2 << "\n";
+}
+
+void system_out(char *num1,char *code,char *num2,char *num3){
+	if(system_output && system_output_function)
+		std::cout << "[系統訊息] 運算結果: " << num1 << code << num2 << "=" << num3 << "\n";
 }
 
 void system_out_function(char *function_name,char *str,char *text){
